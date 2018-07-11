@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -34,14 +35,34 @@ public class MainActivity extends AppCompatActivity {
                         System.currentTimeMillis());
 
         int items=0;
-        for (int i = 0; i < queryUsageStats.size() && i< 8; i++) {
+        ArrayList<String> filter=new ArrayList<String>();
+        filter.add("android");
+        filter.add("com.android.keychain");
+        filter.add("com.android.deskclock");
+        filter.add("com.android.gm");
+        filter.add("com.android.defcontainer");
+        filter.add("com.android.printspooler");
+        filter.add("com.android.settings");
+        filter.add("com.android.cellbroadcastreceiver");
+
+
+        ArrayList<String> apps=new ArrayList<String>();
+        for (int i = 0; i < queryUsageStats.size() ; i++) {
             UsageStats stat=queryUsageStats.get(i);
             String name = stat.getPackageName();
+            if (filter.contains(name)
+                    || name.startsWith("com.android.providers")
+                    || name.startsWith("com.google.android.inputmethod")
+                    || name.startsWith("com.google.android")
+                    || apps.contains(name) ){
+                continue;
+            }
+            System.out.println("Checking: "+name);
             try {
 
                 Drawable iconDrawable = getApplicationContext().getPackageManager().getApplicationIcon(name);
                 if (iconDrawable instanceof BitmapDrawable){
-                    System.out.println(items+ " ICON for "+ name);
+                    System.out.println(items+ " ICON for "+ name + " " + stat.getTotalTimeInForeground());
                     Bitmap bitmap = ((BitmapDrawable)iconDrawable).getBitmap();
                     if (items==0){
                         ImageButton b=findViewById(R.id.icon1);
@@ -55,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                         TextView t=findViewById(R.id.text2);
                         t.setText(name);
                     }
+                    apps.add(name);
                     items++;
                 }
 
