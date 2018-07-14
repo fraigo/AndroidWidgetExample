@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.SeekBar;
 
 /**
  * The configuration screen for the {@link StatusWidget StatusWidget} AppWidget.
@@ -17,13 +18,13 @@ public class StatusWidgetConfigureActivity extends Activity {
     private static final String PREFS_NAME = "me.franciscoigor.widgetexample.StatusWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    EditText mAppWidgetText;
+    SeekBar iconCount;
     View.OnClickListener mOnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             final Context context = StatusWidgetConfigureActivity.this;
 
             // When the button is clicked, store the string locally
-            String widgetText = mAppWidgetText.getText().toString();
+            String widgetText = ""+iconCount.getProgress();
             saveTitlePref(context, mAppWidgetId, widgetText);
 
             // It is the responsibility of the configuration activity to update the app widget
@@ -76,7 +77,7 @@ public class StatusWidgetConfigureActivity extends Activity {
         setResult(RESULT_CANCELED);
 
         setContentView(R.layout.status_widget_configure);
-        mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
+        iconCount = (SeekBar) findViewById(R.id.icon_count);
         findViewById(R.id.add_button).setOnClickListener(mOnClickListener);
 
         // Find the widget id from the intent.
@@ -93,7 +94,7 @@ public class StatusWidgetConfigureActivity extends Activity {
             return;
         }
 
-        mAppWidgetText.setText(loadTitlePref(StatusWidgetConfigureActivity.this, mAppWidgetId));
+        iconCount.setProgress(Integer.parseInt(loadTitlePref(StatusWidgetConfigureActivity.this, mAppWidgetId)));
     }
 }
 

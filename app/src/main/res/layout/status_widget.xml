@@ -3,37 +3,65 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#80FFFFFF"
-    android:orientation="vertical">
+    android:background="#40FFFFFF"
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <TextView
-        android:id="@+id/text1"
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="Last Opened Apps"
         android:textAlignment="center" />
 
-    <ImageButton
-        android:id="@+id/icon1"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@android:color/darker_gray"
-        app:srcCompat="@android:drawable/checkbox_off_background" />
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/icon1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#20FFFFFF"
+            app:srcCompat="@android:drawable/checkbox_off_background" />
+
+        <ImageButton
+            android:id="@+id/icon2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#20FFFFFF"
+            app:srcCompat="@android:drawable/checkbox_off_background" />
+
+        <ImageButton
+            android:id="@+id/icon3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#20FFFFFF"
+            app:srcCompat="@android:drawable/checkbox_off_background" />
+
+        <ImageButton
+            android:id="@+id/icon4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#20FFFFFF"
+            app:srcCompat="@android:drawable/checkbox_off_background" />
+
+
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/text2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textAlignment="center" />
-
-    <ImageButton
-        android:id="@+id/icon2"
+        android:id="@+id/updatedTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@android:color/holo_blue_light"
-        app:srcCompat="@android:drawable/checkbox_off_background" />
+        android:text=""
+        android:textAlignment="center" />
 
 </LinearLayout>
