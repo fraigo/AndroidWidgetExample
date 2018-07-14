@@ -55,14 +55,22 @@ public class StatusWidget extends AppWidgetProvider {
 
         HashMap<String, Bitmap> icons = AppIcons.getIcons(context);
 
+        Intent appIntent = new Intent(Intent.ACTION_MAIN);
+        String packageName = appIntent.getStringExtra(context.getPackageName());
+        appIntent.setPackage(context.getPackageName());
+        appIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        PendingIntent appsPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.widget_title, appsPendingIntent);
+
         Iterator it = icons.entrySet().iterator();
         int index=0;
         while (it.hasNext()) {
             Map.Entry<String, Bitmap> pair = (Map.Entry)it.next();
-            Intent appIntent = new Intent(Intent.ACTION_MAIN);
-            String packageName = appIntent.getStringExtra(pair.getKey());
+            appIntent = new Intent(Intent.ACTION_MAIN);
+            packageName = appIntent.getStringExtra(pair.getKey());
+            appIntent.setPackage(packageName);
             appIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            PendingIntent appsPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            appsPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             if (index < iconIds.length){
                 views.setImageViewBitmap(iconIds[index], pair.getValue());
