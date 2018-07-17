@@ -6,9 +6,11 @@ import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -18,6 +20,7 @@ import android.widget.ImageButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,17 +50,40 @@ public class AppIcons {
 
     }
 
+    public static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
+
     @NonNull
     public static Bitmap getBitmapFromDrawable(@NonNull Drawable drawable, int count) {
         int realWidth = drawable.getIntrinsicWidth();
         int realHeight = drawable.getIntrinsicHeight();
 
-        final Bitmap bmp = Bitmap.createBitmap(realWidth, realHeight, Bitmap.Config.ARGB_8888);
+        final Bitmap origBmp = Bitmap.createBitmap(realWidth, realHeight, Bitmap.Config.ARGB_8888);
 
-        final Canvas canvas = new Canvas(bmp);
+        Canvas original = new Canvas(origBmp);
 
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
+        drawable.setBounds(0, 0, original.getWidth(), original.getHeight());
+        drawable.draw(original);
+
+        /*
+        Bitmap bmp = getResizedBitmap(origBmp, 72, 72);
+        bmp = bmp.copy(android.graphics.Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(bmp);
+
 
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -74,9 +100,9 @@ public class AppIcons {
         paint.setTextSize(40);
         paint.setTextAlign(Paint.Align.CENTER);
         canvas.drawText(  Integer.toString(count),drawable.getIntrinsicWidth() * 3.0f / 4.0f, 5+ drawable.getIntrinsicWidth() * 3.0f / 4.0f, paint);
+    */
 
-
-        return bmp;
+        return origBmp;
     }
 
 
@@ -92,7 +118,6 @@ public class AppIcons {
                 UsageEvents.Event event = new UsageEvents.Event();
                 usageEvents.getNextEvent(event);
                 if (event.getEventType() == UsageEvents.Event.MOVE_TO_FOREGROUND) {
-                    System.out.println("EVENT: "+event.getPackageName());
                     result.add(event);
                 }
             }
@@ -116,7 +141,9 @@ public class AppIcons {
             context.startActivity(intent);
         }
 
-        stats.sort(new Comparator<UsageEvents.Event>() {
+
+
+        Collections.sort(stats, new Comparator<UsageEvents.Event>() {
             @Override
             public int compare(UsageEvents.Event o1, UsageEvents.Event o2) {
                 if (o1.getTimeStamp()>o2.getTimeStamp()){
@@ -127,39 +154,39 @@ public class AppIcons {
                 return 0;
             }
         });
-        int iconNumber=0;
+        System.out.println("SIZE: "+ stats.size());
         for (int i = 0; i < stats.size() ; i++) {
             UsageEvents.Event stat=stats.get(i);
             String name = stat.getPackageName();
+            System.out.println("Package "+ i + ":" +name);
             if (filters.contains(name)
                     || name.startsWith("com.android.providers")
                     || name.startsWith("com.google.android.inputmethod")
-                    || name.startsWith("me.franciscoigor")
                     || appNames.contains(name)){
                 continue;
             }
+            System.out.println("Package "+ i + " OK ");
             try {
                 long time = (System.currentTimeMillis() - stat.getTimeStamp()) / (1000 * 60 );
 
                 Drawable iconDrawable = context.getPackageManager().getApplicationIcon(name);
-                if (iconDrawable.getIntrinsicWidth()<100){
+                if (iconDrawable.getIntrinsicWidth()<50){
                     continue;
                 }
-                System.out.println(stat.getTimeStamp()+" ICON for "+ name + " " +" "+(new Date(stat.getTimeStamp())));
+                System.out.println(stat.getTimeStamp()+" ICON for "+ name + " width:" + iconDrawable.getIntrinsicWidth()+" "+(new Date(stat.getTimeStamp())));
                 Bitmap bitmap=getBitmapFromDrawable(iconDrawable, (int)time);
 
                 list.put(name,bitmap);
                 appNames.add(name);
-                iconNumber++;
-
+                
             }
             catch (PackageManager.NameNotFoundException e) {
                 System.out.println("Error converting image "+name);
                 //e.printStackTrace();
             }
-            System.out.println(list);
 
         }
+        System.out.println("APPNAMES: "+appNames);
         return list;
 
     }

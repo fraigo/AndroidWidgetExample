@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         for (int i = 0; i < iconIds.length; i++) {
-            ImageButton button=findViewById(iconIds[i]);
+            ImageView button=findViewById(iconIds[i]);
             button.setVisibility(View.GONE);
         }
 
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         while (it.hasNext()) {
             Map.Entry<String, Bitmap> pair = (Map.Entry)it.next();
             if (index < iconIds.length){
-                ImageButton button=findViewById(iconIds[index]);
+                ImageView button=findViewById(iconIds[index]);
                 button.setImageBitmap(pair.getValue());
                 button.setVisibility(View.VISIBLE);
                 index++;
