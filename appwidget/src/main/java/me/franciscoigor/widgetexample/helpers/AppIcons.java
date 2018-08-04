@@ -136,9 +136,14 @@ public class AppIcons {
 
 
         if (stats.size()==0){
-            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+            try {
+                Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }catch(Exception ex){
+
+            }
+
         }
 
 
@@ -178,7 +183,7 @@ public class AppIcons {
 
                 list.put(name,bitmap);
                 appNames.add(name);
-                
+
             }
             catch (PackageManager.NameNotFoundException e) {
                 System.out.println("Error converting image "+name);
@@ -186,7 +191,6 @@ public class AppIcons {
             }
 
         }
-        System.out.println("APPNAMES: "+appNames);
         return list;
 
     }

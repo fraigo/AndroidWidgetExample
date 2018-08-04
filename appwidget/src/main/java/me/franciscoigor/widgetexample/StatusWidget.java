@@ -66,15 +66,18 @@ public class StatusWidget extends AppWidgetProvider {
             Map.Entry<String, Bitmap> pair = (Map.Entry)it.next();
             Intent appIntent = new Intent(Intent.ACTION_MAIN);
             appIntent = pm.getLaunchIntentForPackage(pair.getKey());
-            appIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            appsPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            if (appIntent != null){
+                appIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                appsPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            if (index < iconIds.length){
-                views.setImageViewBitmap(iconIds[index], pair.getValue());
-                views.setOnClickPendingIntent(iconIds[index], appsPendingIntent);
-                views.setViewVisibility(iconIds[index], View.VISIBLE);
+                if (index < iconIds.length){
+                    views.setImageViewBitmap(iconIds[index], pair.getValue());
+                    views.setOnClickPendingIntent(iconIds[index], appsPendingIntent);
+                    views.setViewVisibility(iconIds[index], View.VISIBLE);
+                }
+                index++;
             }
-            index++;
+
         }
 
 
